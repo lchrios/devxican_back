@@ -17,7 +17,7 @@ var port = normalizePort(process.env.PORT || "8080");
 app.set("port", port);
 
 var server;
-let url = "mongodb://127.0.0.1:32769/devxican";
+let url = "mongodb://127.0.0.1:32769/devxican"; // for develomnet process Fernando's options
 
 db.connect(url, (err, db) => {
   if (err) {
