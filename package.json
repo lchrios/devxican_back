@@ -1,0 +1,19 @@
+{
+  "name": "devxican_back",
+  "version": "0.0.1",
+  "description": "Devxican_back is the backend side for Devxican. Is a forum for software engineering interview questions focused on latam interviews.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lchrios/devxican_back.git"
+  },
+  "author": "Fernando Benavides Emanuel Estrada Christopher Ortega",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/lchrios/devxican_back/issues"
+  },
+  "homepage": "https://github.com/lchrios/devxican_back#readme"
+}
