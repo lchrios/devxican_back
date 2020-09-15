@@ -7,9 +7,9 @@ In the project directory, you can run:
 Runs the app in the development mode.<br />
 - Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
 
-- Use [http://localhost:8080/feed] (http://localhost:8080/feed) to get a JSON with all the questions
+- Use [http://localhost:8080/feed](http://localhost:8080/feed) to get a JSON with all the questions
 
-- Use [http://localhost:8080/questions/new] (http://localhost:8080/question/new) in a HTTP client to post a Javascript Object of a question
+- Use [http://localhost:8080/questions/new](http://localhost:8080/question/new) in a HTTP client to post a Javascript Object of a question
 
 
 ## Installation of DB
@@ -23,7 +23,7 @@ https://docs.nodebb.org
 
 ## Direct dependencies used:
 
-- [express-generator] (https://www.npmjs.com/package/express-generator)
+- [express-generator](https://www.npmjs.com/package/express-generator)
   with the next flags: express --view=ejs
 
-- [mongodb driver] (https://www.npmjs.com/package/mongodb)
+- [mongodb driver](https://www.npmjs.com/package/mongodb)
