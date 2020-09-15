@@ -9,7 +9,14 @@ Functional Requirements
     - create a question
     - comment on a question
 
-    
+2. Questions
+
+3. Answers
+
+4. Feed
+
+
+
 DB
 
 1. User
