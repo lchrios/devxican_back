@@ -1,0 +1,38 @@
+Project: Devxican
+
+Functional Requirements
+
+1. User
+    - Login
+    - Logout
+    - Register
+    - create a question
+    - comment on a question
+
+    
+DB
+
+1. User
+    - username : str
+    - password : str
+    - email : str
+    - name : str
+    - phone : str
+
+2. Preguntas
+    - title : str
+    - author : Object
+    - date : timestamp
+    - desciption : str
+    - files : str/files
+    - answer : Array[]
+    - likes : int
+    - dislikes : int
+
+3. Answer
+    - author : str
+    - date : timestamp
+    - comment : str
+    - likes : int
+    - dislikes : int
+    - files
