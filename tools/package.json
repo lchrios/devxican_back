@@ -1,0 +1,11 @@
+{
+  "name": "cliente-http",
+  "version": "1.0.0",
+  "description": "",
+  "main": "MAIN.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

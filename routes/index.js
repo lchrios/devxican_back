@@ -9,7 +9,7 @@ router.get("/", function (req, res, next) {
 router.get("/db", (req, res, next) => {
   let db = req.app.get("db");
   console.log(db);
-  res.send("Request recived");
+  res.status(201).send("DB CONNECTED... OK");
 });
 
 module.exports = router;
