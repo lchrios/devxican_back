@@ -16,6 +16,22 @@ Functional Requirements
 4. Feed
 
 
+Endpoints:
+
+Get of a question by id
+delete of a question and comments
+put a like/dislike of a question
+update of a question
+
+Post a comment
+get a comment by id
+
+
+post of a comment with reference/quote
+
+
+
+
 
 DB
 
@@ -31,7 +47,7 @@ DB
     - author : Object
     - date : timestamp
     - desciption : str
-    - files : str/files
+    - files : str
     - answer : Array[]
     - likes : int
     - dislikes : int
@@ -42,4 +58,4 @@ DB
     - comment : str
     - likes : int
     - dislikes : int
-    - files
+    - files : str
