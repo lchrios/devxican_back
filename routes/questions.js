@@ -1,17 +1,17 @@
-var express = require("express");
+let express = require("express");
 const { ObjectID } = require("mongodb");
 let validator = require("validator");
 
-var router = express.Router();
+let router = express.Router();
 
 const collection = "questions";
 
 // GET all collection
 router.get("/", (req, res, next) => {
   let db = req.app.get("db");
-  var cursor = db.collection(collection).find({});
+  let cursor = db.collection(collection).find({});
 
-  var result = [];
+  let result = [];
   cursor.on("data", (d) => {
     result.push(d);
   });
@@ -24,14 +24,13 @@ router.get("/", (req, res, next) => {
 // GET a specific questio with ID
 router.get("/:id", (req, res, next) => {
   let db = req.app.get("db");
-
   let id = req.params.id;
 
-  var cursor = db.collection(collection).find({
+  let cursor = db.collection(collection).find({
     _id: ObjectID(id),
   });
 
-  var result = [];
+  let result = [];
   cursor.on("data", (d) => {
     result.push(d);
   });
@@ -68,8 +67,59 @@ router.post("/", (req, res, next) => {
       }
     });
   } else {
-    res.status(403).send("Error: with the request, data was not added");
+    res.status(400).send("Error: with the request, data was not added");
   }
+});
+
+// POST a question
+router.post("/:id/comments", (req, res, next) => {
+  let comment = req.body;
+  let id = req.params.id;
+  let db = req.app.get("db");
+
+  // validate comment
+  if (validateComment(comment) == false) {
+    res.status(400).send("Error: with the request, data was not added");
+  }
+
+  // validate id
+  let result = [];
+  let cursor = db.collection(collection).find({
+    _id: ObjectID(id),
+  });
+
+  cursor.on("data", (d) => {
+    result.push(d);
+  });
+
+  cursor.on("end", () => {
+    if (result.length == 0) {
+      res.status(400).send("ERROR: there is no question with the id provided");
+    } else {
+      let query = result[0];
+      let answersArray = query["answers"];
+      answersArray.push(comment);
+
+      const updateDoc = {
+        $set: {
+          answers: answersArray,
+        },
+      };
+      console.log(query);
+      console.log(query["_id"]);
+      const filter = {
+        _id: ObjectID(id),
+      };
+
+      db.collection(collection).updateOne(filter, updateDoc, (err, resp) => {
+        if (!err) {
+          res.status(201).send(resp);
+        } else {
+          res.status(510).send("ERROR: trying to update record DB");
+        }
+      });
+    }
+  });
 });
 
 /*
@@ -84,6 +134,37 @@ JSON Expected
   "dislikes" : 0,
 }
 */
+
+function validateComment(comment) {
+  if (validator.isJSON(JSON.stringify(comment)) == false) {
+    return false;
+  }
+
+  if (comment["author"] == undefined) {
+    return false;
+  }
+
+  if (comment["date"] == undefined) {
+    return false;
+  }
+
+  if (comment["comment"] == undefined) {
+    return false;
+  }
+
+  if (comment["likes"] == undefined) {
+    return false;
+  }
+
+  if (comment["dislikes"] == undefined) {
+    return false;
+  }
+
+  // needs more validations
+
+  return true;
+}
+
 function validateQuestion(question) {
   if (validator.isJSON(JSON.stringify(question)) == false) {
     return false;

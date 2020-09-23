@@ -18,16 +18,19 @@ Functional Requirements
 
 Endpoints:
 Chris
-delete of a question and comments
+delete of a question
 put a like/dislike of a question
 update of a question
 
 
 Fernando
-Post a question
-Get of a question by id
-Post a comment
-get a comment by id
+Post a question [Done]
+Get of a question by id [Done]
+Post an answer from given question id [Done]
+
+get all answers from given question id
+get an answer by id
+delete of comment
 
 
 post of a comment with reference/quote
@@ -50,7 +53,7 @@ DB
     - author : Object
     - date : timestamp
     - desciption : str
-    - files : str
+    - *files : str
     - answer : Array[]
     - likes : int
     - dislikes : int
@@ -61,4 +64,4 @@ DB
     - comment : str
     - likes : int
     - dislikes : int
-    - files : str
+    - *files : str
