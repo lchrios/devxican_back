@@ -17,11 +17,11 @@ var port = normalizePort(process.env.PORT || "8080");
 app.set("port", port);
 
 var server;
-let url = "mongodb://127.0.0.1:32769/devxican"; // for develomnet process Fernando's options
+let url = "mongodb://127.0.0.1:32768/devxican"; // for develomnet process Fernando's options
 
 db.connect(url, (err, db) => {
   if (err) {
-    console.log("Error trying to connect to db");
+    console.log("ERROR: TRYING TO CONNECT TO THE DB");
   } else {
     // execute app
 
@@ -38,6 +38,8 @@ db.connect(url, (err, db) => {
     server.listen(port);
     server.on("error", onError);
     server.on("listening", onListening);
+
+    console.log("SERVER: ready!!");
   }
 });
 

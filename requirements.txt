@@ -17,12 +17,15 @@ Functional Requirements
 
 
 Endpoints:
-
-Get of a question by id
+Chris
 delete of a question and comments
 put a like/dislike of a question
 update of a question
 
+
+Fernando
+Post a question
+Get of a question by id
 Post a comment
 get a comment by id
 

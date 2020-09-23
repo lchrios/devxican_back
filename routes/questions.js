@@ -5,7 +5,47 @@ var router = express.Router();
 
 const collection = "questions";
 
-router.post("/new/", (req, res, next) => {
+// GET all collection
+router.get("/", (req, res, next) => {
+  let db = req.app.get("db");
+  var cursor = db.collection(collection).find({});
+
+  var result = [];
+  cursor.on("data", (d) => {
+    result.push(d);
+  });
+
+  cursor.on("end", () => {
+    res.send(result);
+  });
+});
+
+// GET a specific questio with ID
+router.get("/:id", (req, res, next) => {
+  let db = req.app.get("db");
+
+  let id = req.params.id;
+
+  var cursor = db.collection(collection).find({
+    title: id,
+  });
+
+  var result = [];
+  cursor.on("data", (d) => {
+    result.push(d);
+  });
+
+  cursor.on("end", () => {
+    if (result.length == 0) {
+      res.status(404).send(`Error: No question found with ID  ${id}`);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+// POST a question
+router.post("/", (req, res, next) => {
   let question = req.body;
 
   if (validateQuestion(question) == true) {
