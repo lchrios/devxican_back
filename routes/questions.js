@@ -1,4 +1,5 @@
 var express = require("express");
+const { ObjectID } = require("mongodb");
 let validator = require("validator");
 
 var router = express.Router();
@@ -27,7 +28,7 @@ router.get("/:id", (req, res, next) => {
   let id = req.params.id;
 
   var cursor = db.collection(collection).find({
-    title: id,
+    _id: ObjectID(id),
   });
 
   var result = [];
