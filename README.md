@@ -22,6 +22,11 @@ For **docker** run on command line:
 - docker pull mongo
 - docker run --name devxican -P -d mongo
 
+In case of an error running anything on Docker on Windows 10, follow these two commands
+
+### `>cd "C:\Program Files\Docker\Docker"`
+### `>DockerCli.exe -SwitchDaemon`
+
 https://docs.nodebb.org
 
 ## Direct dependencies used:
