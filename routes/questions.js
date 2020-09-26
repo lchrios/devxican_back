@@ -44,6 +44,63 @@ router.get("/:id", (req, res, next) => {
   });
 });
 
+// Like a post
+router.put("/questions/:id", (req, res) => {
+  let db = req.app.get("db");
+  let cursor = db.collection("questions").updateOne({_id: req.params.id
+  }, {$inc: { likes: 1} }, (err) => {
+    if (err) {
+      res.status(404).send("Error: couldn't like the post.")
+    } else {
+      res.status(204);
+    }
+  });
+
+});
+
+// Delete question by ID
+router.delete("/questions/:id", (req, res) => {
+  let db = req.app.get("db");
+  let cursor = db.collection("questions").findOneAndRemove({
+    _id: ObjectID(id),
+  }, (err, question) => {
+    if (err) {
+      res.status(404).send("Error: no question was removed.")
+    } else {
+      console.log(question);
+      res.status(204);
+    }
+  });
+
+
+  cursor.on("end", () => {
+    res.send(result);
+  });
+});
+
+// GET a specific question with ID
+router.get("/:id", (req, res, next) => {
+  let db = req.app.get("db");
+  let id = req.params.id;
+
+  let cursor = db.collection(collection).find({
+    _id: ObjectID(id),
+  });
+
+  let result = [];
+  cursor.on("data", (d) => {
+    result.push(d);
+  });
+
+  cursor.on("end", () => {
+    if (result.length == 0) {
+      res.status(404).send(`Error: No question found with ID  ${id}`);
+    } else {
+      res.send(result);
+    }
+  });
+})
+
 // POST a question
 router.post("/", (req, res, next) => {
   let question = req.body;
