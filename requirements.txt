@@ -18,9 +18,15 @@ Functional Requirements
 
 Endpoints:
 Chris
-delete of a question
-put a like/dislike of a question
-update of a question
+delete of a question [Done]
+post a comment [testear]
+delete a comment [not finished]
+get a comment by id [testear]
+get all comments from a question id [Done]
+put a like/dislike of a question [testear]
+update of a question [testear]
+get all comments from an id [testear]
+robustecer validaciones [not finished]
 
 
 Fernando
@@ -28,9 +34,6 @@ Post a question [Done]
 Get of a question by id [Done]
 Post an answer from given question id [Done]
 
-get all answers from given question id
-get an answer by id
-delete of comment
 
 
 post of a comment with reference/quote

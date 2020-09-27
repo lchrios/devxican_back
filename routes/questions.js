@@ -45,36 +45,45 @@ router.get("/:id", (req, res, next) => {
 });
 
 // Like a post
-router.put("/questions/:id", (req, res) => {
+router.put("/:id/like", (req, res) => {
   let db = req.app.get("db");
   let cursor = db.collection("questions").updateOne({_id: req.params.id
-  }, {$inc: { likes: 1} }, (err) => {
+  }, {$inc: { likes: 1} }, (err, resp) => {
     if (err) {
       res.status(404).send("Error: couldn't like the post.")
     } else {
-      res.status(204);
+      res.status(204).send(resp);
     }
   });
+});
 
+// Dislike a post
+router.put("/:id/like", (req, res) => {
+  let db = req.app.get("db");
+  let cursor = db.collection("questions").updateOne({_id: req.params.id
+  }, {$inc: { dislikes: 1} }, (err, resp) => {
+    if (err) {
+      res.status(404).send("Error: couldn't like the post.")
+    } else {
+      res.status(204).send(resp);
+    }
+  });
 });
 
 // Delete question by ID
-router.delete("/questions/:id", (req, res) => {
+router.delete("/:id", (req, res) => {
   let db = req.app.get("db");
-  let cursor = db.collection("questions").findOneAndRemove({
-    _id: ObjectID(id),
-  }, (err, question) => {
+  let id = req.params.id;
+
+  let query = {_id: ObjectID(id) };
+  console.log(query);
+
+  let cursor = db.collection(collection).deleteOne(query, (err, question) => {
     if (err) {
       res.status(404).send("Error: no question was removed.")
     } else {
-      console.log(question);
-      res.status(204);
+      res.status(204).send(question);
     }
-  });
-
-
-  cursor.on("end", () => {
-    res.send(result);
   });
 });
 
@@ -128,7 +137,70 @@ router.post("/", (req, res, next) => {
   }
 });
 
-// POST a question
+
+// GET all comments from a question
+router.get("/:id/comments", (req, res, next) => {
+  let db = req.app.get("db");
+
+  let cursor = db.collection(collection).find({});
+
+  let result = [];
+  cursor.on("data", (d) => {
+    result.push(d.answers);
+  });
+
+  cursor.on("end", () => {
+    if (result.length == 0) {
+      res.status(404).send(`Error: No comments found for question with ID: ${id}`);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+// GET a comment by id from a question
+router.get("/:id/comments/:cid", (req, res, next) => {
+  let db = req.app.get("db");
+
+  let cursor = db.collection(collection).findOne({_id: ObjectID(req.params.id)});
+
+  cursor.on("data", (d) => {
+    for (var i = 0; i < d.answers.length; i++) {
+      if (d.answers[i]._id == req.params.cid){
+        res.status(204).send(d.answers[i]);
+      }
+    }
+  });
+
+  cursor.on("end", () => {
+    if (result.length == 0) {
+      res.status(404).send(`Error: No comment with ${cid} found for question with ID: ${id}`);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+// Delete coment by ID
+router.delete("/:id/comments/:cid", (req, res) => {
+  let db = req.app.get("db");
+  let id = req.params.id;
+  let cid = req.params.cid;
+
+  let query = {_id: ObjectID(id) };
+  console.log(query);
+
+  let cursor = db.collection(collection).deleteOne(query, (err, question) => {
+    if (err) {
+      res.status(404).send("Error: no question was removed.")
+    } else {
+      res.status(204).send(question);
+    }
+  });
+});
+
+
+// POST a comment
 router.post("/:id/comments", (req, res, next) => {
   let comment = req.body;
   let id = req.params.id;
@@ -228,24 +300,32 @@ function validateQuestion(question) {
   }
 
   if (question["title"] == undefined) {
+    console.log("title not found");
     return false;
   }
   if (question["date"] == undefined) {
+    console.log("date not found");
     return false;
   }
-  if (question["author"] != null) {
+  if (question["author"] == undefined) {
+    console.log("author not found");
     return false;
   }
   if (question["description"] == undefined) {
+    console.log("description not found");
     return false;
   }
   if (question["answers"] == undefined) {
+    
+    console.log("answers not found");
     return false;
   }
   if (question["likes"] == undefined) {
+    console.log("likes not found");
     return false;
   }
   if (question["dislikes"] == undefined) {
+    console.log("dislikes not found");
     return false;
   }
   // needs more validations
