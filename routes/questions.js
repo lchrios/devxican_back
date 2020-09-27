@@ -10,7 +10,18 @@ const collection = "questions";
 router.put("/:id", (req, res, next) => {
   let db = req.app.get("db");
   let id = ObjectID(req.params.id);
-  //let cursor = db.collection(collection).replaceOne({_id: id})
+  if (validateQuestion(req.body)) {
+    let cursor = db.collection(collection).replaceOne({_id: id}, req.body, (err, resp) => {
+      if (err) {
+        res.status(404).send("Error: couldn't update the question data.");
+      } else {
+        res.status(204).send(resp);
+      }
+    });
+  } else {
+    res.status(404).send("Inconsistent JSON with question JSON");
+  }
+  
 });
 
 // GET all collection

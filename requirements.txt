@@ -24,7 +24,7 @@ delete a comment [Done]
 get a comment by id [Done]
 get all comments from a question id [Done]
 put a like/dislike of a question [Done]
-update of a question [testear]
+update of a question [unfinished]
 get all comments from an id [Done]
 robustecer validaciones [not finished]
 
