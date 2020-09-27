@@ -19,13 +19,13 @@ Functional Requirements
 Endpoints:
 Chris
 delete of a question [Done]
-post a comment [testear]
-delete a comment [not finished]
-get a comment by id [testear]
+post a comment [Done]
+delete a comment [Done]
+get a comment by id [Done]
 get all comments from a question id [Done]
-put a like/dislike of a question [testear]
+put a like/dislike of a question [Done]
 update of a question [testear]
-get all comments from an id [testear]
+get all comments from an id [Done]
 robustecer validaciones [not finished]
 
 

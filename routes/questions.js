@@ -6,6 +6,13 @@ let router = express.Router();
 
 const collection = "questions";
 
+// UPDATE all document
+router.put("/:id", (req, res, next) => {
+  let db = req.app.get("db");
+  let id = ObjectID(req.params.id);
+  //let cursor = db.collection(collection).replaceOne({_id: id})
+});
+
 // GET all collection
 router.get("/", (req, res, next) => {
   let db = req.app.get("db");
@@ -47,8 +54,9 @@ router.get("/:id", (req, res, next) => {
 // Like a post
 router.put("/:id/like", (req, res) => {
   let db = req.app.get("db");
-  let cursor = db.collection("questions").updateOne({_id: req.params.id
-  }, {$inc: { likes: 1} }, (err, resp) => {
+  let id = ObjectID(req.params.id);
+
+  let cursor = db.collection("questions").updateOne({_id: id}, {$inc: { likes: 1} }, (err, resp) => {
     if (err) {
       res.status(404).send("Error: couldn't like the post.")
     } else {
@@ -58,9 +66,11 @@ router.put("/:id/like", (req, res) => {
 });
 
 // Dislike a post
-router.put("/:id/like", (req, res) => {
+router.put("/:id/dislike", (req, res) => {
   let db = req.app.get("db");
-  let cursor = db.collection("questions").updateOne({_id: req.params.id
+  let id = ObjectID(req.params.id);
+
+  let cursor = db.collection("questions").updateOne({_id: id
   }, {$inc: { dislikes: 1} }, (err, resp) => {
     if (err) {
       res.status(404).send("Error: couldn't like the post.")
@@ -141,18 +151,24 @@ router.post("/", (req, res, next) => {
 // GET all comments from a question
 router.get("/:id/comments", (req, res, next) => {
   let db = req.app.get("db");
+  let id = req.params.id;
 
-  let cursor = db.collection(collection).find({});
+  let cursor = db.collection(collection).find({_id: ObjectID(id)});
 
   let result = [];
   cursor.on("data", (d) => {
-    result.push(d.answers);
+    for (var i = 0; i < d.answers.length; i++) {
+      if (d != null){
+        result.push(d.answers[i]); 
+      }
+    }
   });
 
   cursor.on("end", () => {
     if (result.length == 0) {
-      res.status(404).send(`Error: No comments found for question with ID: ${id}`);
+      res.status(404).send(`Error: No comments found for question with ID  ${id}`);
     } else {
+      result.splice(0,1);
       res.send(result);
     }
   });
@@ -161,22 +177,26 @@ router.get("/:id/comments", (req, res, next) => {
 // GET a comment by id from a question
 router.get("/:id/comments/:cid", (req, res, next) => {
   let db = req.app.get("db");
+  let id = req.params.id;
+  let cid = req.params.cid;
 
-  let cursor = db.collection(collection).findOne({_id: ObjectID(req.params.id)});
+  let cursor = db.collection(collection).find({_id: ObjectID(id)});
 
+  let result = [];
   cursor.on("data", (d) => {
     for (var i = 0; i < d.answers.length; i++) {
-      if (d.answers[i]._id == req.params.cid){
-        res.status(204).send(d.answers[i]);
+      if (d != null){
+        result.push(d.answers[i]); 
       }
     }
   });
 
   cursor.on("end", () => {
     if (result.length == 0) {
-      res.status(404).send(`Error: No comment with ${cid} found for question with ID: ${id}`);
+      res.status(404).send(`Error: No comments found for question with ID  ${id}`);
     } else {
-      res.send(result);
+      result.splice(0,1);
+      res.send(result[cid]);
     }
   });
 });
@@ -188,13 +208,21 @@ router.delete("/:id/comments/:cid", (req, res) => {
   let cid = req.params.cid;
 
   let query = {_id: ObjectID(id) };
-  console.log(query);
 
-  let cursor = db.collection(collection).deleteOne(query, (err, question) => {
+  let cursor = db.collection(collection).findOne(query, (err, question) => {
     if (err) {
-      res.status(404).send("Error: no question was removed.")
+      res.status(404).send("Error: no question was found.")
     } else {
-      res.status(204).send(question);
+      // delete from array
+      question.answers.splice(cid, 1);
+      // update array
+      db.collection(collection).updateOne(query, {$set: {answers: question.answers}}, (err, resp) =>{
+        if (err) {
+          res.status(404).send("Error: no such comment was found.");
+        } else {
+          res.status(204).send(resp);
+        }
+      });
     }
   });
 });
@@ -270,22 +298,27 @@ function validateComment(comment) {
   }
 
   if (comment["author"] == undefined) {
+    console.log("author not found");
     return false;
   }
 
   if (comment["date"] == undefined) {
+    console.log("date not found");
     return false;
   }
 
   if (comment["comment"] == undefined) {
+    console.log("comment not found");
     return false;
   }
 
   if (comment["likes"] == undefined) {
+    console.log("likes not found");
     return false;
   }
 
   if (comment["dislikes"] == undefined) {
+    console.log("dislikes not found");
     return false;
   }
 
