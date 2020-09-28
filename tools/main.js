@@ -25,13 +25,15 @@ let auxComment = {
   dislikes: Math.floor(Math.random() * 100),
 };
 
+auxCliente.post("/questions", auxPost, (res) => {
+  console.log(res);
+});
+
 auxCliente.post("/questions/5f6109f2fb6bc302f3742bd8/comments", auxComment, (res) => {
   console.log(res);
 });
 
-//auxCliente.post("/questions", auxPost, (res) => {
-//  console.log(res);
-//});
+
 
 /*
 var clienteGitHub = new Cliente("api.github.com", 443, "https");

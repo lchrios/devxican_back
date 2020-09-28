@@ -24,7 +24,7 @@ For **docker** run on command line:
 
 ## In case of an error running anything on Docker on Windows 10, follow these two commands
 
-### `>C:\Program Files\Docker\Docker\DockerCli.exe -SwitchDaemon`
+### `> "C:\Program Files\Docker\Docker\DockerCli.exe" -SwitchDaemon`
 
 https://docs.nodebb.org
 
