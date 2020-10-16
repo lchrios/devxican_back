@@ -290,6 +290,27 @@ router.post("/:id/comments", (req, res, next) => {
   });
 });
 
+// like a comment
+router.put("/:id/comments/:cid/like", (req, res, next) => {
+  let db = req.app.get("db");
+  let id = ObjectID(req.params.id);
+  let cid = req.params.cid;
+  let selector = {};
+  let operator = {};
+  selector['answers.' + '0' + ".like"] = 1 // {'answers.cid.like': 1}
+  operator['$inc'] = selector // {$inc : {'answers.cid.like': 1}}
+
+  cursor = db.collection(collection).update({_id: id}, {$inc: {"answers.0.likes": 1}}, (err, resp) => {
+    if (err) {
+      res.status(404).send("Error: couldn't like the comment, was not found.")
+    } else {
+      res.status(204).send(resp);
+    }
+  });
+});
+
+
+
 /*
 JSON Expected
 {
