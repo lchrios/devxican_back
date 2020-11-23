@@ -10,18 +10,29 @@ const collection = "questions";
 router.put("/:id", (req, res, next) => {
   let db = req.app.get("db");
   let id = ObjectID(req.params.id);
+
   if (validateQuestion(req.body)) {
-    let cursor = db.collection(collection).replaceOne({_id: id}, req.body, (err, resp) => {
+
+    let cursor = db.collection(collection).replaceOne({ _id: id }, req.body, (err, resp) => {
+
       if (err) {
-        res.status(404).send("Error: couldn't update the question data.");
+        let error = {
+          _id: null,
+          data: "Error: couldn't update the question data."
+        }
+        res.status(404).send(error);
       } else {
         res.status(204).send(resp);
       }
     });
   } else {
-    res.status(404).send("Inconsistent JSON with question JSON");
+    let error = {
+      _id: null,
+      data: "Inconsistent JSON with question JSON"
+    }
+    res.status(404).send(error);
   }
-  
+
 });
 
 // GET all collection
@@ -55,7 +66,13 @@ router.get("/:id", (req, res, next) => {
 
   cursor.on("end", () => {
     if (result.length == 0) {
-      res.status(404).send(`Error: No question found with ID  ${id}`);
+
+      let error = {
+        _id: null,
+        data: `Error: No question found with ID  ${id}`
+      }
+
+      res.status(404).send(error);
     } else {
       res.send(result);
     }
@@ -67,9 +84,14 @@ router.put("/:id/like", (req, res) => {
   let db = req.app.get("db");
   let id = ObjectID(req.params.id);
 
-  let cursor = db.collection("questions").updateOne({_id: id}, {$inc: { likes: 1} }, (err, resp) => {
+  let cursor = db.collection("questions").updateOne({ _id: id }, { $inc: { likes: 1 } }, (err, resp) => {
     if (err) {
-      res.status(404).send("Error: couldn't like the post.")
+
+      let error = {
+        _id: null,
+        data: `Error: couldn't like the post`
+      }
+      res.status(404).send(error)
     } else {
       res.status(204).send(resp);
     }
@@ -81,10 +103,16 @@ router.put("/:id/dislike", (req, res) => {
   let db = req.app.get("db");
   let id = ObjectID(req.params.id);
 
-  let cursor = db.collection("questions").updateOne({_id: id
-  }, {$inc: { dislikes: 1} }, (err, resp) => {
+  let cursor = db.collection("questions").updateOne({
+    _id: id
+  }, { $inc: { dislikes: 1 } }, (err, resp) => {
     if (err) {
-      res.status(404).send("Error: couldn't like the post.")
+
+      let error = {
+        _id: null,
+        data: `Error: couldn't like the post`
+      }
+      res.status(404).send(error);
     } else {
       res.status(204).send(resp);
     }
@@ -96,12 +124,17 @@ router.delete("/:id", (req, res) => {
   let db = req.app.get("db");
   let id = req.params.id;
 
-  let query = {_id: ObjectID(id) };
+  let query = { _id: ObjectID(id) };
   console.log(query);
 
   let cursor = db.collection(collection).deleteOne(query, (err, question) => {
+
     if (err) {
-      res.status(404).send("Error: no question was removed.")
+      let error = {
+        _id: null,
+        data: `Error: no question was removed`
+      }
+      res.status(404).send(error)
     } else {
       res.status(204).send(question);
     }
@@ -123,8 +156,14 @@ router.get("/:id", (req, res, next) => {
   });
 
   cursor.on("end", () => {
+
     if (result.length == 0) {
-      res.status(404).send(`Error: No question found with ID  ${id}`);
+
+      let error = {
+        _id: null,
+        data: `Error: No question found with ID  ${id}`
+      }
+      res.status(404).send(error);
     } else {
       res.send(result);
     }
@@ -138,23 +177,25 @@ router.post("/", (req, res, next) => {
   if (validateQuestion(question) == true) {
     let db = req.app.get("db");
 
-    /*
-        here we could add the user that is logged to the question
-        question.user = {
-            name: req.session.name,
-            email: req.session.email
-        };
-    */
-
     db.collection(collection).insertOne(question, (err, resp) => {
       if (!err) {
         res.status(201).send(resp);
       } else {
-        res.status(510).send("Error: trying to insert into DB");
+
+        let error = {
+          _id: null,
+          data: "Error: trying to insert into DB"
+        }
+
+        res.status(510).send(error);
       }
     });
   } else {
-    res.status(400).send("Error: with the request, data was not added");
+    let error = {
+      _id: null,
+      data: "Error: with the request, data was not added"
+    }
+    res.status(400).send(error);
   }
 });
 
@@ -164,22 +205,29 @@ router.get("/:id/comments", (req, res, next) => {
   let db = req.app.get("db");
   let id = req.params.id;
 
-  let cursor = db.collection(collection).find({_id: ObjectID(id)});
+  let cursor = db.collection(collection).find({ _id: ObjectID(id) });
 
   let result = [];
   cursor.on("data", (d) => {
     for (var i = 0; i < d.answers.length; i++) {
-      if (d != null){
-        result.push(d.answers[i]); 
+      if (d != null) {
+        result.push(d.answers[i]);
       }
     }
   });
 
   cursor.on("end", () => {
     if (result.length == 0) {
-      res.status(404).send(`Error: No comments found for question with ID  ${id}`);
+
+      let error = {
+        _id: null,
+        data: `Error: No comments found for question with ID  ${id}`
+      }
+
+      res.status(404).send(error);
+
     } else {
-      result.splice(0,1);
+      result.splice(0, 1);
       res.send(result);
     }
   });
@@ -191,22 +239,28 @@ router.get("/:id/comments/:cid", (req, res, next) => {
   let id = req.params.id;
   let cid = req.params.cid;
 
-  let cursor = db.collection(collection).find({_id: ObjectID(id)});
+  let cursor = db.collection(collection).find({ _id: ObjectID(id) });
 
   let result = [];
   cursor.on("data", (d) => {
     for (var i = 0; i < d.answers.length; i++) {
-      if (d != null){
-        result.push(d.answers[i]); 
+      if (d != null) {
+        result.push(d.answers[i]);
       }
     }
   });
 
   cursor.on("end", () => {
     if (result.length == 0) {
-      res.status(404).send(`Error: No comments found for question with ID  ${id}`);
+
+
+      let error = {
+        _id: null,
+        data: `Error: No comments found for question with ID  ${id}`
+      }
+      res.status(404).send(error);
     } else {
-      result.splice(0,1);
+      result.splice(0, 1);
       res.send(result[cid]);
     }
   });
@@ -218,18 +272,26 @@ router.delete("/:id/comments/:cid", (req, res) => {
   let id = req.params.id;
   let cid = req.params.cid;
 
-  let query = {_id: ObjectID(id) };
+  let query = { _id: ObjectID(id) };
 
   let cursor = db.collection(collection).findOne(query, (err, question) => {
     if (err) {
-      res.status(404).send("Error: no question was found.")
+      let error = {
+        _id: null,
+        data: `Error: no question was found.`
+      }
+      res.status(404).send(error)
     } else {
       // delete from array
       question.answers.splice(cid, 1);
       // update array
-      db.collection(collection).updateOne(query, {$set: {answers: question.answers}}, (err, resp) =>{
+      db.collection(collection).updateOne(query, { $set: { answers: question.answers } }, (err, resp) => {
         if (err) {
-          res.status(404).send("Error: no such comment was found.");
+          let error = {
+            _id: null,
+            data: "Error: no such comment was found."
+          }
+          res.status(404).send(error);
         } else {
           res.status(204).send(resp);
         }
@@ -247,7 +309,11 @@ router.post("/:id/comments", (req, res, next) => {
 
   // validate comment
   if (validateComment(comment) == false) {
-    res.status(400).send("Error: with the request, data was not added");
+    let error = {
+      _id: null,
+      data: "Error: with the request, data was not added"
+    }
+    res.status(400).send(error);
   }
 
   // validate id
@@ -262,7 +328,12 @@ router.post("/:id/comments", (req, res, next) => {
 
   cursor.on("end", () => {
     if (result.length == 0) {
-      res.status(400).send("ERROR: there is no question with the id provided");
+      let error = {
+        _id: null,
+        data: "ERROR: there is no question with the id provided"
+      }
+      res.status(400).send(error);
+
     } else {
       let query = result[0];
       let answersArray = query["answers"];
@@ -283,7 +354,13 @@ router.post("/:id/comments", (req, res, next) => {
         if (!err) {
           res.status(201).send(resp);
         } else {
-          res.status(510).send("ERROR: trying to update record DB");
+
+          let error = {
+            _id: null,
+            data: "ERROR: trying to update record DB"
+          }
+
+          res.status(510).send(error);
         }
       });
     }
@@ -360,7 +437,7 @@ function validateQuestion(question) {
     return false;
   }
   if (question["answers"] == undefined) {
-    
+
     console.log("answers not found");
     return false;
   }

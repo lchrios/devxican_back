@@ -12,8 +12,7 @@ var db = require("mongodb").MongoClient;
 /**
  * Get port from environment and store in Express.
  */
-
-var port = normalizePort(process.env.PORT || "9999");
+var port = normalizePort(process.env.PORT || "23450");
 app.set("port", port);
 
 var server;
